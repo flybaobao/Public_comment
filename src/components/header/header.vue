@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="header" v-if="seller.supports">
     <div class="content-wrapper">
       <div class="avatar">
         <img :src="seller.avatar" alt="">
@@ -13,19 +13,42 @@
           {{seller.description}}/{{seller.deliveryTime}}分钟送达
         </div>
         <div class="support" v-if="seller.supports">
-          <span class="icon decrease" :class="classMape[seller.supports[0].type]"></span>
-          <span class="text">{{seller.supports[0].description}}</span>
+          <span class="icon" :class="classMape[seller.supports[4].type]"></span>
+          <span class="text">{{seller.supports[4].description}}</span>
         </div>
       </div>
+      <div class="support-count" @click="showDetail">
+        <span class="count">{{seller.supports.length}}个</span>
+        <span class="icon-keyboard_arrow_right"></span>
+      </div>
     </div>
-    <div class="butter-wrapper"></div>
+    <div class="butter-wrapper">
+      <span class="butter-tittle"></span><span class="butter-text">{{seller.bulletin}}</span>
+      <i class="icon-keyboard_arrow_right"  @click="showDetail"></i>
+    </div>
+    <div class="background">
+      <img :src="seller.avatar" alt="" width="100%" height="100%">
+    </div>
+    <div class="detail" v-show="detailShow">
+      <div class="derail-wrapper clear-fix">
+        <div class="main">
+          <p></p>
+        </div>
+      </div>
+      <div class="detail-close" @click="closeDetail">
+        <span class="icon-close"></span>
+      </div>
+
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   data () {
-    return {}
+    return {
+      detailShow: false
+    }
   },
   props: {
     seller: {
@@ -34,18 +57,31 @@ export default {
   },
   created () {
     this.classMape = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+  },
+  methods: {
+    showDetail () {
+      this.detailShow = true
+    },
+    closeDetail () {
+      this.detailShow = false
+    }
   }
 }
 </script>
 
 <style lang="less" scoped="scoped">
   @import '../../common/less/mixin.less';
+  @import '../../common/css/icon.css';
+  @import '../../common/less/base.less';
 
   .header{
-    background-color: black;
+    position: relative;
+    background-color: rgba(7,17,27,0.5);
+    overflow: hidden;
     color: #ffffff;
     font-weight: 200;
     .content-wrapper{
+      position: relative;
       padding:24px 12px 18px 24px;
       font-size: 0;
       .avatar{
@@ -54,6 +90,7 @@ export default {
         height:64px;
         border-radius: 2px;
         overflow: hidden;
+        vertical-align: top;
         img{
           width:100%;
           height:100%;
@@ -81,9 +118,10 @@ export default {
         .description{
           font-size: 12px;
           line-height:12px;
+          margin-bottom: 8px;
         }
         .support{
-          margin: 10px 0 2px 0;
+          margin-bottom: 2px;
           .icon{
             display: inline-block;
             width:12px;
@@ -113,6 +151,94 @@ export default {
             line-height: 12px;
           }
         }
+      }
+      .support-count{
+        position:absolute;
+        right:12px;
+        bottom:14px;
+        padding:0 8px;
+        height:24px;
+        line-height:24px;
+        -webkit-border-radius: 14px;
+        -moz-border-radius: 14px;
+        border-radius: 14px;
+        background-color: rgba(0,0,0,0.2);
+        text-align: center;
+        .count{
+          vertical-align: top;
+          font-size:10px;
+        }
+        .icon-keyboard_arrow_right{
+          font-size: 10px;
+          line-height: 24px;
+          margin-left: 2px;
+        }
+      }
+    }
+    .butter-wrapper{
+      position:relative;
+      height:28px;
+      line-height: 28px;
+      padding:0 22px 0 12px;
+      white-space:nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background-color: rgba(7,17,27,0.2);
+      .butter-tittle{
+        display: inline-block;
+        vertical-align: top;
+        margin-top: 8px;
+        width:22px;
+        height:12px;
+        .bg-img('../../components/header/images/bulletin');
+        background-size: 22px 12px;
+        background-repeat: no-repeat;
+      }
+      .butter-text{
+        vertical-align: top;
+        font-size:10px;
+        color: rgb(255,255,255);
+        margin:0 4px;
+      }
+      .icon-keyboard_arrow_right{
+        position:absolute;
+        font-size: 10px;
+        right:12px;
+        top:9px;
+      }
+    }
+    .background{
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      z-index: -1;
+      filter:blur(10px);
+    }
+    .detail{
+      position:fixed;
+      top:0;
+      left:0;
+      z-index:100;
+      width:100%;
+      height:100%;
+      overflow: auto;
+      background-color: rgba(7,17,27,0.8);
+      .derail-wrapper{
+        min-height: 100%;
+        .main{
+          margin-top: 64px;
+          padding-bottom: 64px;
+        }
+      }
+      .detail-close{
+        position: relative;
+        width:32px;
+        height:32px;
+        font-size: 32px;
+        margin: -64px auto 0 auto;
+        clear: both;
       }
     }
   }
