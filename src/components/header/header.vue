@@ -32,7 +32,8 @@
     <div class="detail" v-show="detailShow">
       <div class="derail-wrapper clear-fix">
         <div class="main">
-          <p></p>
+          <h1 class="name">{{seller.name}}</h1>
+
         </div>
       </div>
       <div class="detail-close" @click="closeDetail">
@@ -44,6 +45,8 @@
 </template>
 
 <script>
+import stars from "../stars/stars.vue"
+
 export default {
   data () {
     return {
@@ -227,9 +230,16 @@ export default {
       background-color: rgba(7,17,27,0.8);
       .derail-wrapper{
         min-height: 100%;
+        width:100%;
         .main{
           margin-top: 64px;
           padding-bottom: 64px;
+          .name{
+            line-height:16px;
+            font-weight: 700;
+            font-size:16px;
+            text-align: center;
+          }
         }
       }
       .detail-close{
