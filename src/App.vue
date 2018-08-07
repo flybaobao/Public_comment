@@ -34,11 +34,6 @@ export default {
         this.ratings = res.body.data
       }
     })
-    this.$http.get('/api/goods').then((res) => {
-      if (res.body.errno === 0) {
-        this.goods = res.body.data
-      }
-    })
     this.$http.get('/api/seller').then((res) => {
       if (res.body.errno === 0) {
         this.seller = res.body.data
