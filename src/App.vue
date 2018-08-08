@@ -7,7 +7,7 @@
       <router-link :to="{path:'/seller'}" class="seller-tab tab-bar">商家</router-link>
     </div>
     <div id="app">
-      <router-view/>
+      <router-view :seller="seller"/>
     </div>
   </div>
 
@@ -16,6 +16,7 @@
 <script>
 
 import Header from '@/components/header/header'
+
 export default {
   name: 'App',
   data () {
