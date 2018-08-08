@@ -2,8 +2,8 @@
   <div class="goods" v-if="goods">
     <div class="menu-wrapper" ref="mrapper">
       <ul >
-        <li class="menu-item" v-for="(item, index) in goods" :key="index">
-          <span class="text vux-1px-b">
+        <li class="menu-item" v-for="(item, index) in goods" :key="index" :class="{'current':currentIndex===index}" @click="selectMenu(index)">
+          <span class="vux-1px-b text">
             <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
           </span>
         </li>
@@ -11,7 +11,7 @@
     </div>
     <div class="foods-wrapper" ref="frapper">
       <ul>
-        <li v-for="(item, index) in goods" class="food-list" :key="index">
+        <li v-for="(item, index) in goods" class="food-list food-list-hook" :key="index">
           <h1 class="title">{{item.name}}</h1>
           <ul>
             <li v-for="(food, indexs) in item.foods" class="food-item  vux-1px-b" :key="indexs">
@@ -44,12 +44,26 @@ import BScroll from 'better-scroll'
 export default {
   data () {
     return {
-      goods: {}
+      goods: [],
+      scrollY: 0,
+      listHeight: []
     }
   },
   props: {
     seller: {
       type: Object
+    }
+  },
+  computed: {
+    currentIndex () {
+      for (let i = 0; i < this.listHeight.length; i++) {
+        let height1 = this.listHeight[i]
+        let height2 = this.listHeight[i + 1]
+        if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
+          return i
+        }
+      }
+      return 0
     }
   },
   created () {
@@ -59,15 +73,37 @@ export default {
         this.goods = res.body.data
         this.$nextTick(() => {
           this._innitScroll()
+          this._calculateHeight()
         })
       }
     })
   },
   methods: {
+    selectMenu (index) {
+      let foodList = this.$refs.frapper.getElementsByClassName('food-list-hook')
+      let el = foodList[index]
+      this.foodScroll.scrollToElement(el, 300)
+    },
     _innitScroll () {
-      console.log(this.$refs.mrapper)
-      this.meunScroll = new BScroll(this.$refs.mrapper, {})
-      this.foodScroll = new BScroll(this.$refs.frapper, {})
+      this.meunScroll = new BScroll(this.$refs.mrapper, {
+        click: true
+      })
+      this.foodScroll = new BScroll(this.$refs.frapper, {
+        probeType: 3 // 实时监听滚动
+      })
+      this.foodScroll.on('scroll', (pos) => {
+        this.scrollY = Math.abs(Math.round(pos.y))
+      })
+    },
+    _calculateHeight () {
+      let foodList = this.$refs.frapper.getElementsByClassName('food-list-hook')
+      let height = 0
+      this.listHeight.push(height)
+      for (let i = 0; i < foodList.length; i++) {
+        let item = foodList[i]
+        height += item.clientHeight
+        this.listHeight.push(height)
+      }
     }
   }
 }
@@ -125,6 +161,22 @@ export default {
           font-size: 12px;
           margin: auto;
         }
+        &.current{
+          position: relative;
+          z-index: 10;
+          background-color: white;
+          font-size:12px;
+          margin-top: -1px;
+          font-weight: 700;
+          .vux-1px-b:after{
+            border:none !important;
+          }
+        }
+        &:last-child{
+          .vux-1px-b:after{
+            border:none !important;
+          }
+        }
       }
     }
     .foods-wrapper{
@@ -142,8 +194,10 @@ export default {
         margin: 18px;
         padding-bottom: 18px;
         &:last-child{
+          &.vux-1px-b:after{
+            border:none !important;
+          }
           border:none;
-          pdding-bottom:0;
           margin-bottom: 0;
         }
         .icon{
@@ -161,6 +215,11 @@ export default {
             height:14px;
             line-height:14px;
             margin:2px 0 8px 0;
+          }
+          .desc{
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
           .text-style{
             font-size:10px;
