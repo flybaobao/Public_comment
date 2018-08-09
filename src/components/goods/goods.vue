@@ -20,7 +20,7 @@
               </div>
               <div class="content">
                 <h2 class="name">{{food.name}}</h2>
-                <p class="desc text-style" v-if="food.description">{{food.description}}</p>
+                <div class="desc text-style" v-if="food.description">{{food.description}}</div>
                 <div class="extra text-style">
                   <span class="sellCount">月售{{food.sellCount}}</span>
                   <span>好评率{{food.rating}}%</span>
@@ -38,7 +38,7 @@
         </li>
       </ul>
     </div>
-    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" v-if="seller"></shopcart>
+    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :selectFoods="selectFoods" v-if="seller"></shopcart>
   </div>
 </template>
 
@@ -74,6 +74,18 @@ export default {
         }
       }
       return 0
+    },
+    // 计算价格
+    selectFoods () {
+      let foods = []
+      this.goods.forEach((good) => {
+        good.foods.forEach((food) => {
+          if (food.count) {
+            foods.push(food)
+          }
+        })
+      })
+      return foods
     }
   },
   created () {
@@ -99,6 +111,7 @@ export default {
         click: true
       })
       this.foodScroll = new BScroll(this.$refs.frapper, {
+        click: true,
         probeType: 3 // 实时监听滚动
       })
       this.foodScroll.on('scroll', (pos) => {
@@ -227,15 +240,12 @@ export default {
             margin:2px 0 8px 0;
           }
           .desc{
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+
           }
           .text-style{
             font-size:10px;
             color: rgb(147,153,159);
-            height:10px;
-            line-height:10px;
+            line-height:15px;
           }
           .extra{
             margin: 8px 0;
@@ -257,6 +267,11 @@ export default {
               color: rgb(147,153,159);
               text-decoration:line-through;
             }
+          }
+          .control-wrapper{
+            position: absolute;
+            right:0;
+            bottom:12px;
           }
         }
       }

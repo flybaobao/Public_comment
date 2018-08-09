@@ -15,13 +15,38 @@
       <div class="pay" :class="payClass">{{payDesc}}</div>
     </div>
   </div>
+  <div class="ball-container">
+    <transition name="drop">
+      <div v-for="(ball, index) in balls" v-show="ball.show" class="ball" :key="index">
+        <div class="inner"></div>
+      </div>
+    </transition>
+  </div>
 </div>
 </template>
 
 <script>
 export default {
   data () {
-    return {}
+    return {
+      balls: [
+        {
+          show: false
+        },
+        {
+          show: false
+        },
+        {
+          show: false
+        },
+        {
+          show: false
+        },
+        {
+          show: false
+        }
+      ]
+    }
   },
   props: {
     deliveryPrice: {
@@ -33,12 +58,7 @@ export default {
     selectFoods: {
       type: Array,
       default () {
-        return [
-          {
-            price: 10,
-            count: 10
-          }
-        ]
+        return []
       }
     }
   },
@@ -68,7 +88,7 @@ export default {
       }
     },
     payClass () {
-      if (this.totalPrice > this.minPrice) {
+      if (this.totalPrice >= this.minPrice) {
         return 'enough'
       } else {
         return 'noEnough'
@@ -178,6 +198,33 @@ export default {
         margin-top: 12px;
         font-size:12px;
       }
+    }
+  }
+  .ball-container{
+    .ball{
+      position: fixed;
+      left:32px;
+      z-index: 200;
+      bottom:22px;
+
+    }
+  }
+  .drop-enter-active {
+    animation: drop-in .5s;
+  }
+  .drop-leave-active {
+    animation: drop-in .5s reverse;
+  }
+  @keyframes drop-in {
+    0% {
+      opacity: 0;
+      transform:translate3d(24px,0,0);
+      transform:rotate(180deg);
+    }
+    100% {
+      opacity: 1;
+      transform:translate3d(0,0,0);
+      transform:rotate(0);
     }
   }
 }
