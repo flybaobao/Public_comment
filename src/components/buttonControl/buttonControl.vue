@@ -25,8 +25,7 @@ export default {
 </script>
 
 <style lang="less" scoped="scoped">
-
-  @import '../../common/css/icon.css';
+@import '../../common/css/icon.css';
 .button-control{
 
 }
