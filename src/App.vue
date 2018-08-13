@@ -30,15 +30,12 @@ export default {
     headers: Header
   },
   created () {
-    this.$http.get('/api/ratings').then((res) => {
-      if (res.body.errno === 0) {
-        this.ratings = res.body.data
-      }
+    this.$http.get('http://121.40.171.1:8080/mockjsdata/39/api').then((res) => {
+      this.ratings = res.body.ratings
+      //      console.log(res)
     })
-    this.$http.get('/api/seller').then((res) => {
-      if (res.body.errno === 0) {
-        this.seller = res.body.data
-      }
+    this.$http.get('http://121.40.171.1:8080/mockjsdata/39/api').then((res) => {
+      this.seller = res.body.seller
     })
   }
 }

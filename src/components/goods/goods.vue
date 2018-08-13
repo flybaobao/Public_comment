@@ -30,7 +30,7 @@
                   <span class="oldPrice" v-if="food.oldPrice">¥{{food.oldPrice}}</span>
                 </div>
                 <div class="control-wrapper">
-                  <cartcontrol :food="food"></cartcontrol>
+                  <cartcontrol :food="food" v-on:cart-add="cartAdd"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -38,7 +38,7 @@
         </li>
       </ul>
     </div>
-    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :selectFoods="selectFoods" v-if="seller"></shopcart>
+    <shopcart ref="shopcart" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :selectFoods="selectFoods" v-if="seller"></shopcart>
   </div>
 </template>
 
@@ -90,14 +90,14 @@ export default {
   },
   created () {
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
-    this.$http.get('/api/goods').then((res) => {
-      if (res.body.errno === 0) {
-        this.goods = res.body.data
-        this.$nextTick(() => {
-          this._innitScroll()
-          this._calculateHeight()
-        })
-      }
+    this.$http.get('http://121.40.171.1:8080/mockjsdata/39/api').then((res) => {
+      //      if (res.body.errno === 0) {
+      this.goods = res.body.goods
+      this.$nextTick(() => {
+        this._innitScroll()
+        this._calculateHeight()
+      })
+      //      }
     })
   },
   methods: {
@@ -127,6 +127,14 @@ export default {
         height += item.clientHeight
         this.listHeight.push(height)
       }
+    },
+    cartAdd (el) {
+      // dom元素更新后执行， 因此此处能正确打印出更改之后的值；
+      // 体验优化，异步执行下一步动画
+      this.$nextTick(() => {
+        this.$refs['shopcart'].drop(el)
+        // 调用shopcart组件的drop()函数
+      })
     }
   }
 }
