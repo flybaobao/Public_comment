@@ -45,7 +45,6 @@ export default {
 @import '~vux/src/styles/1px.less';
 
 .app-index {
-
   .tab{
     width:100%;
     height:40px;
