@@ -17,11 +17,19 @@
           <div class="price">
             <span class="newPrice">¥{{food.price}}</span><span class="oldPrice" v-if="food.oldPrice">¥{{food.oldPrice}}</span>
           </div>
+          <div class="cartcontrol-wrapper">
+            <cartcontrol :food="food"  v-on:cart-add="cartAdd"></cartcontrol>
+          </div>
+          <transition name="fade">
+            <div @click="addFoods(food)" class="buy" v-show="!food.count || food.count === 0">加入购物车</div>
+          </transition>
         </div>
-        <div class="cartcontrol-wrapper">
-          <cartcontrol :food="food" v-on:cart-add="cartAdd"></cartcontrol>
+        <split v-show="food.info"></split>
+        <div class="info" v-show="food.info">
+          <h1 class="title">商品信息</h1>
+          <p class="text">{{food.info}}</p>
         </div>
-        <div @click="addFoods(food)" class="buy" v-show="!food.count || food.count === 0">加入购物车</div>
+        <split></split>
       </div>
     </div>
   </transition>
@@ -31,6 +39,7 @@
 import BScroll from 'better-scroll'
 import Vue from 'vue'
 import cartcontrol from '../buttonControl/buttonControl'
+import split from '../split/split'
 export default {
   data () {
     return {
@@ -40,10 +49,14 @@ export default {
   props: {
     food: {
       type: Object
+    },
+    elm: {
+      type: Object
     }
   },
   components: {
-    cartcontrol
+    cartcontrol,
+    split
   },
   methods: {
     show () {
@@ -63,12 +76,13 @@ export default {
       if (!this.food.count) {
         Vue.set(this.food, 'count', 1)
       }
+      this.$emit('cart-add', event.target)
     },
     cartAdd (el) {
       // dom元素更新后执行， 因此此处能正确打印出更改之后的值；
       // 体验优化，异步执行下一步动画
       this.$nextTick(() => {
-        this.$refs['shopcart'].drop(el)
+        this.elm.drop(el)
         // 调用shopcart组件的drop()函数
       })
     }
@@ -120,6 +134,7 @@ export default {
     }
     .content{
       padding:18px;
+      position: relative;
       .title{
         line-height: 14px;
         margin-bottom: 8px;
@@ -154,25 +169,47 @@ export default {
           text-decoration:line-through;
         }
       }
+      .cartcontrol-wrapper{
+        position:absolute;
+        right:12px;
+        bottom:12px;
+      }
+      .buy{
+        position: absolute;
+        right:18px;
+        bottom:18px;
+        z-index: 10;
+        height:24px;
+        line-height:24px;
+        padding:0 12px;
+        font-size:10px;
+        box-sizing: border-box;
+        border-radius: 12px;
+        background-color: rgb(0,160,220);
+        color: #ffffff;
+        &.fade-enter-active, &.fade-leave-active {
+          transition: opacity .2s;
+        }
+        &.fade-enter, &.fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+          opacity: 0;
+        }
+      }
     }
-    .cartcontrol-wrapper{
-      position:absolute;
-      right:12px;
-      bottom:12px;
+    .info{
+      padding:18px;
+      .title{
+        line-height:14px;
+        margin-bottom:6px;
+        font-size:14px;
+        color: rgb(7,17,27);
+      }
+      .text{
+        line-height:24px;
+        font-size:12px;
+        padding:0 8px;
+        color: #4d555d;
+      }
     }
-    .buy{
-      position: absolute;
-      right:18px;
-      bottom:18px;
-      z-index: 10;
-      height:24px;
-      line-height:24px;
-      padding:0 12px;
-      font-size:10px;
-      box-sizing: border-box;
-      border-radius: 12px;
-      background-color: rgb(0,160,220);
-      color: #ffffff;
-    }
+
   }
 </style>
