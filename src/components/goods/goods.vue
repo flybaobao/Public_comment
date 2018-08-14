@@ -14,7 +14,7 @@
         <li v-for="(item, index) in goods" class="food-list food-list-hook" :key="index">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="(food, indexs) in item.foods" class="food-item  vux-1px-b" :key="indexs">
+            <li v-for="(food, indexs) in item.foods" class="food-item  vux-1px-b" :key="indexs" @click="selectedFood(food)">
               <div class="icon">
                 <img :src="food.icon" alt="" width="100%" height="100%">
               </div>
@@ -39,6 +39,7 @@
       </ul>
     </div>
     <shopcart ref="shopcart" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :selectFoods="selectFoods" v-if="seller"></shopcart>
+    <food :food="selectedfood" ref="food"></food>
   </div>
 </template>
 
@@ -46,17 +47,21 @@
 import BScroll from 'better-scroll'
 import shopcart from '../shopcart/shopcart'
 import cartcontrol from '../buttonControl/buttonControl'
+import food from '../food/food'
+import api from '@/common/js/api'
 export default {
   components: {
     shopcart,
-    cartcontrol
+    cartcontrol,
+    food
   },
   data () {
     return {
       goods: [],
       scrollY: 0,
       listHeight: [],
-      count: 11
+      count: 11,
+      selectedfood: {}
     }
   },
   props: {
@@ -90,7 +95,7 @@ export default {
   },
   created () {
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
-    this.$http.get('http://121.40.171.1:8080/mockjsdata/39/api').then((res) => {
+    this.$http.get(api.dataUrl).then((res) => {
       //      if (res.body.errno === 0) {
       this.goods = res.body.goods
       this.$nextTick(() => {
@@ -135,6 +140,10 @@ export default {
         this.$refs['shopcart'].drop(el)
         // 调用shopcart组件的drop()函数
       })
+    },
+    selectedFood (em) {
+      this.selectedfood = em
+      this.$refs.food.show()
     }
   }
 }

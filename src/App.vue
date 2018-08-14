@@ -16,7 +16,7 @@
 <script>
 
 import Header from '@/components/header/header'
-
+import api from '@/common/js/api'
 export default {
   name: 'App',
   data () {
@@ -30,12 +30,10 @@ export default {
     headers: Header
   },
   created () {
-    this.$http.get('http://121.40.171.1:8080/mockjsdata/39/api').then((res) => {
+    this.$http.get(api.dataUrl).then((res) => {
       this.ratings = res.body.ratings
-      //      console.log(res)
-    })
-    this.$http.get('http://121.40.171.1:8080/mockjsdata/39/api').then((res) => {
       this.seller = res.body.seller
+      //      console.log(res)
     })
   }
 }
