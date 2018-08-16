@@ -1,7 +1,7 @@
 # sell
 
 > A Vue.js project
-you can click here http://104.223.19.16/goods.html
+you can click here http://www.evelyntan.cn/goods.html
 
 ## Build Setup
 
