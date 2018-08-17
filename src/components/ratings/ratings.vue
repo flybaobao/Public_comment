@@ -32,7 +32,7 @@
       <ratingselect  @select-type-one="selectTypeOne" @select-type-two="selectTypeTwo" :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="ratings"></ratingselect>
       <div class="rating-wrapper">
         <ul>
-          <li class="rating-item vux-1px-b" v-for="(item, index) in ratings" :key="index">
+          <li class="rating-item vux-1px-b" v-for="(item, index) in ratingSee" :key="index">
             <div class="avatar">
               <img :src="item.avatar" alt="">
             </div>
@@ -76,11 +76,15 @@ export default {
         all: '全部',
         pos: '满意',
         neg: '不满意'
+      },
+      ratingSee: {
+        type: Object
       }
     }
   },
   mounted () {
     this._innitScroll()
+    this.ratingSee = this.ratings
   },
   props: {
     seller: {
@@ -102,11 +106,13 @@ export default {
       })
     },
     selectTypeOne (el) {
-      this.selectType = el
-      console.log(this.ratings)
+      this.selectType = el.num
+      this.ratingSee = el.data
+      console.log(el)
     },
     selectTypeTwo (el) {
-      this.onlyContent = el
+      this.onlyContent = el.fig
+      this.ratingSee = el.fig ? el.fullRatings : this.food.ratings
       console.log(el)
     }
   },

@@ -1,9 +1,9 @@
 <template>
   <div class="rating-select">
     <div class="rating-type vux-1px-b">
-      <span @click="select(2)" class="block pos" :class="{'active': selectType === 2}">{{desc.all}} <span class="count">{{ratings.length}}</span></span>
-      <span @click="select(0)" class="block pos" :class="{'active': selectType === 0}">{{desc.pos}} <span class="count">{{positives.length}}</span></span>
-      <span @click="select(1)" class="block neg" :class="{'active': selectType === 1}">{{desc.neg}} <span class="count">{{negatives.length}}</span></span>
+      <span @click="select({'num': 2, 'data': ratings})" class="block pos" :class="{'active': selectType === 2}">{{desc.all}} <span class="count">{{ratings.length}}</span></span>
+      <span @click="select({'num': 0, 'data': positives})" class="block pos" :class="{'active': selectType === 0}">{{desc.pos}} <span class="count">{{positives.length}}</span></span>
+      <span @click="select({'num': 1, 'data': negatives})" class="block neg" :class="{'active': selectType === 1}">{{desc.neg}} <span class="count">{{negatives.length}}</span></span>
     </div>
     <div @click="toggleContent" class="switch" :class="{'on': onlyContent}">
       <span class="icon-check_circle"></span>
@@ -52,7 +52,7 @@ export default {
     },
     toggleContent () {
       // this.onlyContent = !this.onlyContent
-      this.$emit('select-type-two', !this.onlyContent)
+      this.$emit('select-type-two', {'fig': !this.onlyContent, 'nullRatings': this.nullRatings, 'fullRatings': this.fullRatings})
     }
   },
   computed: {
@@ -64,6 +64,16 @@ export default {
     negatives () {
       return this.ratings.filter((rating) => {
         return rating.rateType === NEG
+      })
+    },
+    nullRatings () {
+      return this.ratings.filter((rating) => {
+        return rating.text === ''
+      })
+    },
+    fullRatings () {
+      return this.ratings.filter((rating) => {
+        return rating.text !== ''
       })
     }
   }

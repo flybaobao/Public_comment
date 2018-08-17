@@ -35,7 +35,7 @@
           <ratingselect  @select-type-one="selectTypeOne" @select-type-two="selectTypeTwo" :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
           <div class="rating-wrapper">
             <ul v-show="food.ratings">
-              <li v-for="(rating, index) in food.ratings" :key="index" class="rating-item vux-1px-b">
+              <li v-for="(rating, index) in ratingSee" :key="index" class="rating-item vux-1px-b">
                 <div class="user">
                   <span class="name">{{rating.username}}</span>
                   <div class="avatar"><img :src="rating.avatar" alt="" width="100%" height="100%"></div>
@@ -73,6 +73,9 @@ export default {
         all: '全部',
         pos: '推荐',
         neg: '吐槽'
+      },
+      ratingSee: {
+        type: Object
       }
     }
   },
@@ -88,6 +91,11 @@ export default {
     cartcontrol,
     split,
     ratingselect
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.ratingSee = this.food.ratings
+    })
   },
   methods: {
     show () {
@@ -120,11 +128,13 @@ export default {
       })
     },
     selectTypeOne (el) {
-      this.selectType = el
+      this.selectType = el.num
+      this.ratingSee = el.data
       console.log(el)
     },
     selectTypeTwo (el) {
-      this.onlyContent = el
+      this.onlyContent = el.fig
+      this.ratingSee = el.fig ? el.fullRatings : this.food.ratings
       console.log(el)
     }
   },
