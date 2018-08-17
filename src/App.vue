@@ -7,7 +7,7 @@
       <router-link :to="{path:'/seller'}" class="seller-tab tab-bar">商家</router-link>
     </div>
     <div id="app">
-      <router-view :seller="seller"/>
+      <router-view :seller="seller" :ratings="ratings"/>
     </div>
   </div>
 
@@ -22,8 +22,7 @@ export default {
   data () {
     return {
       seller: {},
-      goods: {},
-      ratings: {}
+      ratings: []
     }
   },
   components: {
