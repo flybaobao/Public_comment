@@ -5,5 +5,5 @@ let serverUrl = '/api'
 // let serverUrl = 'http://www.evelyntan.cn'
 // let serverUrl = 'http://www.shixiaoli.com'
 export default {
-  dataUrl: serverUrl + '/data.json'
+  dataUrl: serverUrl + '/assets/video/data.json'
 }
