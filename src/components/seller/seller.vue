@@ -28,6 +28,10 @@
             </div>
           </li>
         </ul>
+        <div class="favorite" @click="getSee">
+          <span class="icon-favorite" :class="{'red': favorite}"></span>
+          <span class="text">{{favoriteText}}</span>
+        </div>
       </div>
       <split></split>
       <div class="bulletin">
@@ -37,12 +41,31 @@
         </div>
       </div>
       <ul class="supports">
-        <li class="support-item vux-1px-tb" v-for="(item, index) in seller.supports" :key="index">
+        <li class="support-item vux-1px-t" v-for="(item, index) in seller.supports" :key="index">
           <span class="icon" :class="classMap[seller.supports[index].type]"></span>
           <span class="text">{{item.description}}</span>
         </li>
       </ul>
       <split></split>
+      <div class="pics">
+        <h1 class="title">商家实景</h1>
+        <div class="pic-wrapper" ref="picW">
+          <ul class="pic-list" ref="pict">
+            <li class="pic-item" v-for="(item, index) in seller.pics" :key="index">
+                <img id="pic-img" :src="item" alt="">
+            </li>
+          </ul>
+        </div>
+      </div>
+      <split></split>
+      <div class="infos">
+        <h1 class="title">商家信息</h1>
+        <ul class="infos-wrapper">
+          <li class="infos-item vux-1px-t" v-for="(item, index) in seller.infos" :key="index">
+            <p class="info-text">{{item}}</p>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -54,7 +77,12 @@ import BScroll from 'better-scroll'
 export default {
   data () {
     return {
-
+      favorite: false
+    }
+  },
+  computed: {
+    favoriteText () {
+      return this.favorite ? '已收藏' : '未收藏'
     }
   },
   props: {
@@ -70,13 +98,46 @@ export default {
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
     this.$nextTick(() => {
       this._scrolls()
+      this._intScroll()
     })
+  },
+  watch: {
+    seller () {
+      this._scrolls()
+      this._intScroll()
+    }
+  },
+  mounted () {
+
   },
   methods: {
     _scrolls () {
-      this.sellerScroll = new BScroll(this.$refs.sellerWrapper, {
+      if (!this.sellerScroll) {
+        this.sellerScroll = new BScroll(this.$refs.sellerWrapper, {
 
-      })
+        })
+      } else {
+        this.sellerScroll.refresh()
+      }
+    },
+    _intScroll () {
+      if (this.seller.pics) {
+        let picWidth = 120
+        let margin = 6
+        let widths = (picWidth + margin) * this.seller.pics.length - margin
+        this.$refs.pict.style.width = widths + 'px'
+        if (!this.picScroll) {
+          this.picScroll = new BScroll(this.$refs.picW, {
+            scrollX: true,
+            eventPassthrough: 'vertical'
+          })
+        } else {
+          this.picScroll.refresh()
+        }
+      }
+    },
+    getSee () {
+      this.favorite = !this.favorite
     }
   }
 }
@@ -140,6 +201,28 @@ export default {
         }
       }
     }
+    .favorite{
+      position: absolute;
+      width:50px;
+      right:5px;
+      top:18px;
+      text-align: center;
+      .icon-favorite{
+        display: block;
+        line-height:24px;
+        font-size:24px;
+        color: #d4d6d9;
+        margin-bottom: 4px;
+        &.red{
+          color:rgb(240,20,20);
+        }
+      }
+      .text{
+        line-height: 10px;
+        font-size:10px;
+        color: rgb(77,85,93);
+      }
+    }
   }
   .bulletin{
     padding:18px 18px 0 18px;
@@ -192,6 +275,56 @@ export default {
         font-size:12px;
         font-weight:100;
         color: rgb(7,17,27);
+      }
+    }
+  }
+  .pics{
+    padding:18px;
+    .title{
+      line-height: 14px;
+      font-size:14px;
+      color:rgb(7,17,27);
+      margin-bottom:12px;
+    }
+    .pic-wrapper{
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      .pic-list{
+        font-size: 0;
+        .pic-item{
+          display: inline-block;
+          margin-top: 12px;
+          width:120px;
+          height:90px;
+          margin-right: 6px;
+          &.pic-item:last-child{
+            margin-right: 0;
+          }
+          #pic-img{
+
+          }
+        }
+      }
+    }
+  }
+  .infos{
+    padding:18px;
+    .title{
+      line-height: 14px;
+      font-size:14px;
+      color:rgb(7,17,27);
+      margin-bottom:12px;
+    }
+    .infos-wrapper{
+      .infos-item{
+        padding:16px 12px;
+        .info-text{
+          line-height:16px;
+          font-size:12px;
+          font-weight:100;
+          color: rgb(7,17,27);
+        }
       }
     }
   }
